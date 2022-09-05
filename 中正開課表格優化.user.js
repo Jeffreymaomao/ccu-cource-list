@@ -151,6 +151,7 @@ function generate_array(){
             A[r][w] += '<div class="Class'+num+'">';
             A[r][w] += "("+t+")"+ title[i] +"<br>" + professor[i];
             A[r][w] += '<div class="hide">';
+            A[r][w] += "時間："+times[i]+"<br>";
             A[r][w] += "年級："+years[i]+"<br>";
             A[r][w] += "人數："+people[i]+"<br>";
             A[r][w] += "學分："+credit[i]+"<br>";
