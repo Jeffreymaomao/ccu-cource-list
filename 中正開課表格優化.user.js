@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         中正開課表格優化
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  由於中正大學的開課系統在對時間上過於麻煩，用JavaScript生成課表，用於對照時間
 // @author       楊長茂(409220055)
 // @match        https://kiki.ccu.edu.tw/~ccmisp06/Course/*
@@ -12,7 +12,13 @@
 // @icon         https://raw.githubusercontent.com/Jeffreymaomao/figure/main/fig3.jpg
 // ==/UserScript==
 
-
+//switch------------------------
+function check_switch(){
+    let mainContent = document.querySelector('.table1');
+    document.querySelector('.switch input').addEventListener('change', e => {
+    mainContent.style.display = e.target.checked ? 'block' : 'none';
+});
+}
 // 更改表格內部的邊緣弧度--------------------------------------------
 function adjust_border_radius(radius){
     const box = document.querySelectorAll('td,th');
@@ -227,6 +233,16 @@ function generate_html(R1,R2,R3,R4,R5){
             .div1:hover {background-color:rgba(255,204,204,0.9);}
             .div2:hover {background-color:rgba(204,229,255,0.9);}
             .div3:hover {background-color:rgba(229,255,204,0.9);}
+            .switch {position: relative;display: inline-block;width: 40px;height: 20px;}
+            .switch input {opacity: 0;width: 0;height: 0;}
+            .slider {position: absolute;cursor: pointer;top: 0;left: 0;right: 0;bottom: 0;background-color: #ccc;-webkit-transition: .4s;transition: .4s;}
+            .slider:before {position: absolute;content: "";height: 18px;width: 18px;left: 2px;bottom: 1px;background-color: white;-webkit-transition: .4s;transition: .4s;}
+            input:checked+.slider {background-color: #ccc;}
+            input:focus+.slider {box-shadow: 0 0 1px #2196F3;background-color: #ccc;}
+            input:checked+.slider:before {-webkit-transform: translateX(18px);-ms-transform: translateX(18px);transform: translateX(18px);}
+            input:checked + .slider {background-color: #E21C90;}
+            .slider.round {border-radius: 50px;}
+            .slider.round:before {border-radius: 60%;}
         </style>
     </head>
     <body>
@@ -234,12 +250,12 @@ function generate_html(R1,R2,R3,R4,R5){
         <p style="text-align:right;margin:10px 100px 10px 0px;font-size:5px">
         by 物理系-楊長茂 ( <a href = "mailto: jeffrey0613mao@gmail.com">jeffrey0613mao@gmail.com</a> )
         </p>
-        <!--<span style="margin:100px;"><button class="button" onclick="changeColor();" ><span>Change color</span></button></span><br>-->
         <span style="margin:120px;">
         <div class="div1">必修</div>
         <div class="div2">選修</div>
         <div class="div3">通識</div>
-        </span><br>
+        <label class="switch" ><input type="checkbox" checked><span class="slider round"></span></label>
+        </span>
         <table class="table1" align="center" border="12" width="90%";>
             <tbody>
                 <!-------------------------------------------------------------------------------------------------------------------------------->
@@ -456,6 +472,12 @@ function add_table_after_tags(tags,array){
     H1[0].insertAdjacentHTML('beforeend', html);
     newline(2,H1[0])
 }
+
+// 將表格插入在輸入之 tag 之後---------------------------------------
+function scroll_position(){
+    var y = window.window.scrollY;
+    window.scrollTo(0, y);
+}
 //----------------------------------------------------------------------------------------------------------
 // 執行程式
 (function() {'use strict';
@@ -465,5 +487,6 @@ function add_table_after_tags(tags,array){
     add_table_after_tags("h1",generate_array());
 })();
 //修正表格內部時間表的高度
-var intervalId = window.setInterval(function(){adjust_table_height()}, 10);
+var intervalId1 = window.setInterval(function(){adjust_table_height()}, 10);
+var intervalId2 = window.setInterval(function(){check_switch()}, 100);
 
